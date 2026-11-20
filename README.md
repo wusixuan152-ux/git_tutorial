@@ -4,17 +4,22 @@
 가상의 동네 카페 30일간 판매 데이터 및 매출 실적 분석 대시보드입니다.  
 本项目为虚构社区咖啡店30天销售数据与营收大屏的可视化分析项目。
 
+> 🌐 **온라인 데모 (GitHub Pages) / 在线演示地址**：  
+> [https://wusixuan152-ux.github.io/git_tutorial/](https://wusixuan152-ux.github.io/git_tutorial/)
+
 ---
 
 ## 🚀 실행 및 사용 안내 / 运行与使用指南
 
 ### [KO] 한국어 안내
-- **실행 방법**: 별도의 웹 서버 구동이나 패키지 설치(`npm`, `pip` 등) 없이, 파일 탐색기에서 **`index.html` 파일을 더블 클릭**하면 기본 웹 브라우저(Chrome, Edge 등)에서 바로 열립니다.
+- **온라인 확인**: [GitHub Pages 데모 페이지](https://wusixuan152-ux.github.io/git_tutorial/)에서 브라우저로 즉시 확인하실 수 있습니다.
+- **로컬 실행 방법**: 별도의 웹 서버 구동이나 패키지 설치(`npm`, `pip` 등) 없이, 파일 탐색기에서 **`index.html` 파일을 더블 클릭**하면 기본 웹 브라우저(Chrome, Edge 등)에서 바로 열립니다.
 - **인터넷 연결**: 차트 라이브러리인 Chart.js를 CDN으로 불러오므로 최초 실행 시 인터넷 연결이 필요합니다.
 - **데이터 로딩**: 별도의 외부 CSV/JSON 파일 비동기 요청(`fetch`) 없이 `data.js` 내의 자바스크립트 변수(`window.CAFE_DATA`)를 직접 참조하므로, 로컬 파일 환경(`file:///`)에서도 보안(CORS) 오류 없이 완벽하게 작동합니다.
 
 ### [ZH] 中文指南
-- **运行方式**：无需搭建任何 Web 服务器或安装依赖包（如 `npm`、`pip` 等），在文件管理器中**直接双击 `index.html` 文件**，即可在系统默认浏览器（Chrome、Edge 等）中秒级打开。
+- **在线直接访问**：可直接点击 [GitHub Pages 在线演示](https://wusixuan152-ux.github.io/git_tutorial/) 实时体验仪表板。
+- **本地运行方式**：无需搭建任何 Web 服务器或安装依赖包（如 `npm`、`pip` 等），在文件管理器中**直接双击 `index.html` 文件**，即可在系统默认浏览器（Chrome、Edge 等）中秒级打开。
 - **联网说明**：图表工具 Chart.js 通过 CDN 引入，首次加载需要联网。
 - **数据加载机制**：数据直接以内置变量（`window.CAFE_DATA`）的形式保存在 `data.js` 中，无需读取外部 CSV 文件或通过 `fetch` 异步请求，因此在本地单机双击打开（`file:///` 协议）时完全不受 CORS 跨域限制，稳定可靠。
 
