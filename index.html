@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>초록숲 커피 - 30일 매출 분석 대시보드</title>
+  <title>초록숲 커피 · 绿林咖啡馆 - 매출 대시보드 / 销售数据仪表板</title>
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -29,7 +29,7 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Microsoft YaHei", "Malgun Gothic", sans-serif;
       background-color: var(--bg);
       color: var(--text-main);
       line-height: 1.5;
@@ -37,7 +37,7 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1220px;
       margin: 0 auto;
     }
 
@@ -65,6 +65,13 @@
       gap: 8px;
     }
 
+    .brand .bilingual-title-zh {
+      font-size: 1.25rem;
+      color: var(--primary-light);
+      font-weight: 600;
+      margin-left: 6px;
+    }
+
     .brand p {
       color: var(--text-muted);
       font-size: 0.95rem;
@@ -75,12 +82,14 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 14px;
+      padding: 8px 16px;
       background: #e8f5e9;
       color: var(--primary-dark);
       border-radius: 20px;
       font-size: 0.85rem;
       font-weight: 600;
+      line-height: 1.4;
+      text-align: right;
     }
 
     .header-badge::before {
@@ -95,7 +104,7 @@
     /* KPI Summary Cards */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 16px;
       margin-bottom: 24px;
     }
@@ -112,17 +121,25 @@
     }
 
     .kpi-title {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .kpi-title .sub-zh {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      font-weight: 500;
     }
 
     .kpi-value {
       font-size: 1.65rem;
       font-weight: 700;
       color: var(--primary-dark);
+      margin: 4px 0;
     }
 
     .kpi-sub {
@@ -138,7 +155,7 @@
       margin-bottom: 24px;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 950px) {
       .charts-grid {
         grid-template-columns: 1fr;
       }
@@ -156,7 +173,9 @@
       margin-bottom: 18px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .card-title {
@@ -164,18 +183,25 @@
       font-weight: 700;
       color: var(--primary-dark);
       display: flex;
-      align-items: center;
-      gap: 8px;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .card-title .sub-zh {
+      font-size: 0.88rem;
+      color: var(--primary-light);
+      font-weight: 600;
     }
 
     .card-desc {
       font-size: 0.82rem;
       color: var(--text-muted);
+      text-align: right;
     }
 
     .chart-container {
       position: relative;
-      height: 320px;
+      height: 330px;
       width: 100%;
     }
 
@@ -202,6 +228,14 @@
       color: var(--text-muted);
       border-bottom: 2px solid var(--border-color);
       font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    th span.th-zh {
+      display: block;
+      font-size: 0.76rem;
+      color: #9ca3af;
+      font-weight: normal;
     }
 
     td {
@@ -279,6 +313,7 @@
       padding: 20px;
       font-size: 0.85rem;
       color: var(--text-muted);
+      line-height: 1.7;
     }
   </style>
 </head>
@@ -287,35 +322,50 @@
     <!-- Header -->
     <header>
       <div class="brand">
-        <h1>🌿 초록숲 커피 (Green Forest Coffee)</h1>
-        <p>가상 동네 카페 30일간 판매 데이터 및 매출 실적 대시보드</p>
+        <h1>
+          🌿 초록숲 커피 <span class="bilingual-title-zh">· 绿林咖啡馆</span>
+        </h1>
+        <p>가상 동네 카페 30일간 판매 데이터 및 매출 실적 대시보드 / 虚构社区咖啡店30天销售数据与营收大屏</p>
       </div>
       <div class="header-badge">
-        집계 기간: 2026.10.01 ~ 2026.10.30 (30일)
+        집계 기간: 2026.10.01 ~ 2026.10.30 (30일간)<br>
+        统计周期: 2026.10.01 ~ 2026.10.30 (共30天)
       </div>
     </header>
 
     <!-- Key Performance Indicators (KPI) -->
     <div class="kpi-grid">
       <div class="kpi-card">
-        <span class="kpi-title">30일간 총매출</span>
+        <span class="kpi-title">
+          <span>30일간 총매출</span>
+          <span class="sub-zh">30天总销售额</span>
+        </span>
         <span class="kpi-value" id="kpi-total-revenue">-</span>
-        <span class="kpi-sub">목표 달성률 108%</span>
+        <span class="kpi-sub">목표 달성률 108% / 目标达成率 108%</span>
       </div>
       <div class="kpi-card">
-        <span class="kpi-title">총 판매 잔수</span>
+        <span class="kpi-title">
+          <span>총 판매 잔수</span>
+          <span class="sub-zh">总销售杯数</span>
+        </span>
         <span class="kpi-value" id="kpi-total-qty">-</span>
-        <span class="kpi-sub">5개 대표 메뉴 합산</span>
+        <span class="kpi-sub">5개 대표 메뉴 합산 / 5款代表饮品合计</span>
       </div>
       <div class="kpi-card">
-        <span class="kpi-title">일평균 매출액</span>
+        <span class="kpi-title">
+          <span>일평균 매출액</span>
+          <span class="sub-zh">日均销售额</span>
+        </span>
         <span class="kpi-value" id="kpi-avg-revenue">-</span>
-        <span class="kpi-sub">주말 1.35배 가중 반영</span>
+        <span class="kpi-sub">주말 1.35배 가중 반영 / 周末按1.35倍加权</span>
       </div>
       <div class="kpi-card">
-        <span class="kpi-title">최고 인기 메뉴</span>
+        <span class="kpi-title">
+          <span>최고 인기 메뉴</span>
+          <span class="sub-zh">最畅销饮品</span>
+        </span>
         <span class="kpi-value" id="kpi-top-menu">-</span>
-        <span class="kpi-sub">판매량 1위 음료</span>
+        <span class="kpi-sub">판매량 1위 음료 / 销量第一名</span>
       </div>
     </div>
 
@@ -324,8 +374,11 @@
       <!-- ① 일별 매출 꺾은선 차트 -->
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">📈 ① 일별 매출 추이 (30일)</h2>
-          <span class="card-desc">일자별 총 매출액 (단위: 원)</span>
+          <div class="card-title">
+            <span>📈 ① 일별 매출 추이 (30일)</span>
+            <span class="sub-zh">① 按日销售额折线图 (30天)</span>
+          </div>
+          <span class="card-desc">일자별 총 매출액 (원) / 每日总额 (韩元)</span>
         </div>
         <div class="chart-container">
           <canvas id="dailyRevenueChart"></canvas>
@@ -335,8 +388,11 @@
       <!-- ② 메뉴별 판매량 막대 차트 -->
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">☕ ② 메뉴별 누적 판매량</h2>
-          <span class="card-desc">메뉴 5종 판매 잔수 (단위: 잔)</span>
+          <div class="card-title">
+            <span>☕ ② 메뉴별 누적 판매량</span>
+            <span class="sub-zh">② 各菜单累计销量柱状图</span>
+          </div>
+          <span class="card-desc">메뉴 5종 판매 잔수 (잔) / 5款销量 (杯)</span>
         </div>
         <div class="chart-container">
           <canvas id="menuSalesChart"></canvas>
@@ -347,19 +403,22 @@
     <!-- ③ 요일별 평균 매출 표 -->
     <div class="card table-section">
       <div class="card-header">
-        <h2 class="card-title">📅 ③ 요일별 평균 매출 분석</h2>
-        <span class="card-desc">요일별 영업일수 대비 평균 매출 및 판매 잔수 분석표</span>
+        <div class="card-title">
+          <span>📅 ③ 요일별 평균 매출 분석</span>
+          <span class="sub-zh">③ 按星期平均销售额统计表</span>
+        </div>
+        <span class="card-desc">요일별 영업일수 대비 평균 매출 및 판매량 분석 / 按星期营业天数统计的平均额与销量分析</span>
       </div>
       <div class="table-wrapper">
         <table>
           <thead>
             <tr>
-              <th>요일 구분</th>
-              <th class="text-center">영업 일수</th>
-              <th class="text-right">요일 총 매출</th>
-              <th class="text-right">일평균 매출</th>
-              <th class="text-right">일평균 판매량</th>
-              <th class="text-right">매출 점유율</th>
+              <th>요일 구분 <span class="th-zh">星期分类</span></th>
+              <th class="text-center">영업 일수 <span class="th-zh">营业天数</span></th>
+              <th class="text-right">요일 총 매출 <span class="th-zh">该星期总额</span></th>
+              <th class="text-right">일평균 매출 <span class="th-zh">日均销售额</span></th>
+              <th class="text-right">일평균 판매량 <span class="th-zh">日均销量</span></th>
+              <th class="text-right">매출 점유율 <span class="th-zh">销售额占比</span></th>
             </tr>
           </thead>
           <tbody id="dow-table-body">
@@ -371,7 +430,10 @@
 
     <!-- Footer -->
     <footer>
-      <p>※ 본 대시보드는 가상의 동네 카페 '초록숲 커피'를 위해 생성된 시뮬레이션 데이터입니다. (별도 서버 설치 없이 브라우저 더블클릭으로 바로 작동합니다)</p>
+      <p>
+        ※ 본 대시보드는 가상의 동네 카페 '초록숲 커피'를 위해 생성된 시뮬레이션 데이터입니다. (별도 서버 설치 없이 브라우저 더블클릭으로 바로 작동합니다)<br>
+        ※ 本仪表板为虚构社区咖啡店“绿林咖啡馆”生成的模拟数据。（无需搭建服务器，双击直接在浏览器中打开运行）
+      </p>
     </footer>
   </div>
 

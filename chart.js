@@ -1,4 +1,4 @@
-// chart.js - 차트 및 요일별 평균 매출 표 렌더링 스크립트
+// chart.js - 차트 및 요일별 평균 매출 표 렌더링 스크립트 (韩中双语)
 
 document.addEventListener('DOMContentLoaded', function () {
   if (!window.CAFE_DATA) {
@@ -34,33 +34,43 @@ function renderKPICards(data) {
   const topMenuEl = document.getElementById('kpi-top-menu');
 
   if (totalRevEl) totalRevEl.textContent = formatKRW(data.grandTotalRevenue);
-  if (totalQtyEl) totalQtyEl.textContent = data.grandTotalQuantity.toLocaleString('ko-KR') + ' 잔';
+  if (totalQtyEl) totalQtyEl.textContent = data.grandTotalQuantity.toLocaleString('ko-KR') + ' 잔 (杯)';
   if (avgRevEl) avgRevEl.textContent = formatKRW(data.averageDailyRevenue);
 
   // 최고 인기 메뉴 계산
   const menuTotals = {};
   data.dailyData.forEach(day => {
     day.sales.forEach(item => {
-      if (!menuTotals[item.menuName]) {
-        menuTotals[item.menuName] = 0;
+      if (!menuTotals[item.menuId]) {
+        menuTotals[item.menuId] = {
+          name: item.menuName,
+          quantity: 0
+        };
       }
-      menuTotals[item.menuName] += item.quantity;
+      menuTotals[item.menuId].quantity += item.quantity;
     });
   });
 
-  let topMenuName = '';
+  let topMenuId = '';
   let maxQty = -1;
-  for (const [name, qty] of Object.entries(menuTotals)) {
-    if (qty > maxQty) {
-      maxQty = qty;
-      topMenuName = name;
+  for (const [id, info] of Object.entries(menuTotals)) {
+    if (info.quantity > maxQty) {
+      maxQty = info.quantity;
+      topMenuId = id;
     }
   }
 
+  const menuBilingual = {
+    m1: '아메리카노 (美式咖啡)',
+    m2: '카페라떼 (拿铁咖啡)',
+    m3: '바닐라 라떼 (香草拿铁)',
+    m4: '카푸치노 (卡布奇诺)',
+    m5: '자몽 에이드 (西柚气泡水)'
+  };
+
   if (topMenuEl) {
-    // 메뉴 이름 축약 표시 (괄호 앞부분)
-    const displayName = topMenuName.split(' ')[0] || topMenuName;
-    topMenuEl.textContent = `${displayName} (${maxQty.toLocaleString('ko-KR')}잔)`;
+    const bilingualName = menuBilingual[topMenuId] || '아메리카노 (美式咖啡)';
+    topMenuEl.textContent = `${bilingualName} · ${maxQty.toLocaleString('ko-KR')}잔`;
   }
 }
 
@@ -69,7 +79,17 @@ function renderDailyRevenueChart(data) {
   const ctx = document.getElementById('dailyRevenueChart');
   if (!ctx) return;
 
-  const labels = data.dailyData.map(d => `${d.date.slice(5)} (${d.dayOfWeekShort})`);
+  const dowBilingualShort = {
+    '월': '월(一)',
+    '화': '화(二)',
+    '수': '수(三)',
+    '목': '목(四)',
+    '금': '금(五)',
+    '토': '토(六)',
+    '일': '일(日)'
+  };
+
+  const labels = data.dailyData.map(d => `${d.date.slice(5)} ${dowBilingualShort[d.dayOfWeekShort] || d.dayOfWeekShort}`);
   const revenues = data.dailyData.map(d => d.totalRevenue);
 
   new Chart(ctx, {
@@ -77,7 +97,7 @@ function renderDailyRevenueChart(data) {
     data: {
       labels: labels,
       datasets: [{
-        label: '일별 매출액',
+        label: '일별 매출액 / 日销售额',
         data: revenues,
         borderColor: '#2d6a4f',
         backgroundColor: 'rgba(45, 106, 79, 0.12)',
@@ -112,7 +132,7 @@ function renderDailyRevenueChart(data) {
           bodyFont: { size: 12 },
           callbacks: {
             label: function (context) {
-              return '매출: ' + formatKRW(context.parsed.y);
+              return '매출 / 销售额: ' + formatKRW(context.parsed.y);
             }
           }
         }
@@ -132,7 +152,7 @@ function renderDailyRevenueChart(data) {
           ticks: {
             font: { size: 11 },
             callback: function (val) {
-              return (val / 10000) + '만';
+              return (val / 10000) + '만 (万)';
             }
           }
         }
@@ -146,11 +166,19 @@ function renderMenuSalesChart(data) {
   const ctx = document.getElementById('menuSalesChart');
   if (!ctx) return;
 
-  // 메뉴별 집계
+  const menuBilingual = {
+    m1: { ko: '아메리카노', zh: '美式咖啡', full: '아메리카노 / 美式咖啡' },
+    m2: { ko: '카페라떼', zh: '拿铁咖啡', full: '카페라떼 / 拿铁咖啡' },
+    m3: { ko: '바닐라 라떼', zh: '香草拿铁', full: '바닐라 라떼 / 香草拿铁' },
+    m4: { ko: '카푸치노', zh: '卡布奇诺', full: '카푸치노 / 卡布奇诺' },
+    m5: { ko: '자몽 에이드', zh: '西柚气泡水', full: '자몽 에이드 / 西柚气泡水' }
+  };
+
   const menuStats = {};
   data.menus.forEach(m => {
     menuStats[m.id] = {
       name: m.name,
+      bilingual: menuBilingual[m.id] || { full: m.name },
       price: m.price,
       quantity: 0,
       revenue: 0
@@ -167,7 +195,7 @@ function renderMenuSalesChart(data) {
   });
 
   const menuList = Object.values(menuStats);
-  const labels = menuList.map(m => m.name.split(' (')[0]);
+  const labels = menuList.map(m => [m.bilingual.ko, m.bilingual.zh]);
   const quantities = menuList.map(m => m.quantity);
   const revenues = menuList.map(m => m.revenue);
 
@@ -184,7 +212,7 @@ function renderMenuSalesChart(data) {
     data: {
       labels: labels,
       datasets: [{
-        label: '총 판매량 (잔)',
+        label: '총 판매량 / 总销量 (잔/杯)',
         data: quantities,
         backgroundColor: colors,
         borderColor: '#2d6a4f',
@@ -206,13 +234,13 @@ function renderMenuSalesChart(data) {
           callbacks: {
             title: function (items) {
               const idx = items[0].dataIndex;
-              return menuList[idx].name;
+              return menuList[idx].bilingual.full;
             },
             label: function (context) {
               const idx = context.dataIndex;
-              const q = quantities[idx].toLocaleString('ko-KR') + ' 잔';
+              const q = quantities[idx].toLocaleString('ko-KR') + ' 잔 (杯)';
               const r = formatKRW(revenues[idx]);
-              return [`판매량: ${q}`, `총 매출: ${r}`];
+              return [`판매량 / 销量: ${q}`, `총 매출 / 总额: ${r}`];
             }
           }
         }
@@ -220,7 +248,7 @@ function renderMenuSalesChart(data) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { font: { size: 12, weight: '500' } }
+          ticks: { font: { size: 11, weight: '500' } }
         },
         y: {
           beginAtZero: true,
@@ -242,21 +270,19 @@ function renderDayOfWeekTable(data) {
   const tbody = document.getElementById('dow-table-body');
   if (!tbody) return;
 
-  // 요일 순서 (월 ~ 일)
   const daysOrder = [
-    { name: '월요일', short: '월', isWeekend: false },
-    { name: '화요일', short: '화', isWeekend: false },
-    { name: '수요일', short: '수', isWeekend: false },
-    { name: '목요일', short: '목', isWeekend: false },
-    { name: '금요일', short: '금', isWeekend: false },
-    { name: '토요일', short: '토', isWeekend: true },
-    { name: '일요일', short: '일', isWeekend: true }
+    { name: '월요일', zh: '星期一', short: '월', isWeekend: false },
+    { name: '화요일', zh: '星期二', short: '화', isWeekend: false },
+    { name: '수요일', zh: '星期三', short: '수', isWeekend: false },
+    { name: '목요일', zh: '星期四', short: '목', isWeekend: false },
+    { name: '금요일', zh: '星期五', short: '금', isWeekend: false },
+    { name: '토요일', zh: '星期六', short: '토', isWeekend: true },
+    { name: '일요일', zh: '星期日', short: '일', isWeekend: true }
   ];
 
-  // 집계
   const stats = {};
   daysOrder.forEach(d => {
-    stats[d.name] = { count: 0, totalRev: 0, totalQty: 0, isWeekend: d.isWeekend };
+    stats[d.name] = { count: 0, totalRev: 0, totalQty: 0, isWeekend: d.isWeekend, zh: d.zh };
   });
 
   data.dailyData.forEach(d => {
@@ -291,13 +317,13 @@ function renderDayOfWeekTable(data) {
 
     tr.innerHTML = `
       <td>
-        <span class="day-badge ${d.isWeekend ? 'weekend' : 'weekday'}">${d.name}</span>
-        ${isPeak ? '<span class="peak-badge">최고매출</span>' : ''}
+        <span class="day-badge ${d.isWeekend ? 'weekend' : 'weekday'}">${d.name} (${d.zh})</span>
+        ${isPeak ? '<span class="peak-badge">최고매출 / 最高</span>' : ''}
       </td>
-      <td class="text-center">${s.count}일</td>
+      <td class="text-center">${s.count}일 (天)</td>
       <td class="text-right font-medium">${formatKRW(s.totalRev)}</td>
       <td class="text-right font-bold text-accent">${formatKRW(avgRev)}</td>
-      <td class="text-right">${avgQty.toLocaleString('ko-KR')} 잔</td>
+      <td class="text-right">${avgQty.toLocaleString('ko-KR')} 잔 (杯)</td>
       <td class="text-right">
         <div class="share-container">
           <span>${share}%</span>
